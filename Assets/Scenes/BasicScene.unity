@@ -14,7 +14,7 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 0
+  m_Fog: 1
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
@@ -151,15 +151,18 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 203322281}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 618de7bd48fbe8342b7d4fda90b19590, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unfocusedDensity: 0.15
+  unfocusedDensity: 0.3
   focusedDensity: 0
   fogColor: {r: 0.6, g: 0.65, b: 0.7, a: 1}
   smoothTime: 0.3
+  matchBackgroundToFog: 1
+  clearSkyColor: {r: 0.5, g: 0.7, b: 0.95, a: 1}
+  targetCamera: {fileID: 0}
 --- !u!4 &203322283
 Transform:
   m_ObjectHideFlags: 0
@@ -600,7 +603,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 642557913}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 8}
+  m_LocalPosition: {x: 0, y: 1, z: 20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
