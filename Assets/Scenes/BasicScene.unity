@@ -151,7 +151,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 203322281}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 618de7bd48fbe8342b7d4fda90b19590, type: 3}
   m_Name: 
@@ -419,12 +419,14 @@ MonoBehaviour:
   farDistance: 10
   nearDistance: 1
   useFacing: 1
-  facingFullAngle: 15
+  facingFullAngle: 25
   facingNoneAngle: 60
-  facingMinFactor: 0.4
+  facingReveal: 0.15
+  facingVolumeBoost: 0.3
   fullFocusAt: 0.95
-  focusSmoothTime: 0.3
+  focusSmoothTime: 0.2
   unfocusedVolume: 0.5
+  voiceGain: 1
   fadeMs: 6
   loopEdgeFadeMs: 2
   debugDistance: 0
@@ -635,7 +637,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8d54e626ebe8a840b72e602f9455779, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duckedRatio: 0.2
+  duckedRatio: 1
 --- !u!82 &918239851
 AudioSource:
   m_ObjectHideFlags: 0
@@ -747,6 +749,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &980033804 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7696548424635294048, guid: 895f6f3c2d334633b5800312285058d2, type: 3}
+  m_PrefabInstance: {fileID: 452463679}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &980033811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 980033804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d805eb118a51b364eabdc2371e45f29b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraTransform: {fileID: 44071533}
+  moveSpeed: 2
+  turnSpeed: 90
 --- !u!1 &1249617917
 GameObject:
   m_ObjectHideFlags: 0

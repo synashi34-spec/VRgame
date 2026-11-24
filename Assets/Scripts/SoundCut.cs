@@ -53,12 +53,16 @@ public class SoundCut : MonoBehaviour
     public bool useFacing = true;
     public float facingFullAngle = 15f;
     public float facingNoneAngle = 60f;
-    [Range(0f, 1f)] public float facingMinFactor = 0.4f;
+    // 向いたときに、聞こえる区間が増える量（小さいほど内容は分からない）
+    [Range(0f, 0.4f)] public float facingReveal = 0.15f;
+    // 向いたときに、音が大きくなる量（気付くための合図）
+    [Range(0f, 0.6f)] public float facingVolumeBoost = 0.3f;
 
     [Header("聞こえ方の設定")]
     [Range(0.5f, 1f)] public float fullFocusAt = 0.95f;
     public float focusSmoothTime = 0.3f;
     [Range(0f, 1f)] public float unfocusedVolume = 0.5f;
+    [Range(0.5f, 3f)] public float voiceGain = 1f;
     public float fadeMs = 6f;
     public float loopEdgeFadeMs = 2f;
 
@@ -71,6 +75,8 @@ public class SoundCut : MonoBehaviour
     private AudioClip dummyClip;
     private float smoothFocus;
     private float focusVelocity;
+    private float smoothFacing;
+    private float facingVelocity;
 
     // オーディオスレッドと共有
     private volatile float currentFocus;
@@ -133,21 +139,30 @@ public class SoundCut : MonoBehaviour
         if (player == null) return;
 
         float distance = Vector3.Distance(player.position, transform.position);
-        float target = Mathf.InverseLerp(farDistance, nearDistance, distance);
+        float distanceFocus = Mathf.InverseLerp(farDistance, nearDistance, distance);
 
-        // 向いているほど focus を高くする
+        // 向き：1 = 正面、0 = そっぽ
+        float facing = 0f;
         if (useFacing)
         {
             Vector3 to = transform.position - player.position;
             float angle = Vector3.Angle(player.forward, to);
-            float facing = 1f - Mathf.InverseLerp(facingFullAngle, facingNoneAngle, angle);
-            target *= Mathf.Lerp(facingMinFactor, 1f, facing);
+            facing = 1f - Mathf.InverseLerp(facingFullAngle, facingNoneAngle, angle);
         }
 
+        // 内容が聞こえる度合い：主役は距離。
+        // 向きは遠いときにだけ少し足す（近づくほど効果は小さくなる）
+        float targetFocus = distanceFocus + facingReveal * (1f - distanceFocus) * facing;
+
         smoothFocus = Mathf.SmoothDamp(
-            smoothFocus, target, ref focusVelocity, focusSmoothTime);
+            smoothFocus, targetFocus, ref focusVelocity, focusSmoothTime);
+        smoothFacing = Mathf.SmoothDamp(
+            smoothFacing, facing, ref facingVelocity, focusSmoothTime);
+
         currentFocus = smoothFocus;
-        currentVolume = Mathf.Lerp(unfocusedVolume, 1f, smoothFocus);
+        // 音量：focus で上がり、向くとさらに少し上がる（気付くための合図）
+        currentVolume = Mathf.Clamp01(
+            Mathf.Lerp(unfocusedVolume, 1f, smoothFocus) + facingVolumeBoost * smoothFacing);
 
         debugDistance = distance;
         debugFocus = smoothFocus;
@@ -290,7 +305,9 @@ public class SoundCut : MonoBehaviour
                     edge = (float)(pcmFrames - position) / edgeSamples;
             }
 
-            float s = pcm[position] * g * edge * volume;
+            float s = pcm[position] * g * edge * volume * voiceGain;
+            if (s > 1f) s = 1f; else if (s < -1f) s = -1f;
+
             int baseIndex = i * channels;
             for (int c = 0; c < channels; c++) data[baseIndex + c] = s;
 
